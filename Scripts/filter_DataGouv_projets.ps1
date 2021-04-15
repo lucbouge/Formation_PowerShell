@@ -1,6 +1,12 @@
-$url = "https://www.data.gouv.fr/fr/datasets/r/ecb8ec1b-a9e8-4ce0-8891-010ca1ca808f"
+$filtering_column = "Projet.Code_Decision_ANR"
+$filtering_expression = "^ANR-21" 
+
 
 #####################################################
+# Phase 1: Download the DataGouv data into a local file
+
+$url = "https://www.data.gouv.fr/fr/datasets/r/ecb8ec1b-a9e8-4ce0-8891-010ca1ca808f"
+
 $data = "data.xlsx"
 $path = "${HOME}/${data}"
 
@@ -16,6 +22,7 @@ else {
 }
 
 #####################################################
+# Phase 2: Install the ImportExcel Module
 
 # https://github.com/dfinke/ImportExcel
 
@@ -32,6 +39,7 @@ else {
 }
 
 #####################################################
+# Phase 3: Import the local data file into a PowerShell object, and process it
 
 Write-Host("Loading Excel file ${path}")
 
@@ -39,6 +47,9 @@ $excel = Import-Excel -Path "$path"
 
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/where-object
 
-$result = $excel | Where-Object -Property "Projet.Code_Decision_ANR" -Match "^ANR-21" 
+$result = $excel | Where-Object -Property  -Match 
+
+#####################################################
+# Phase 4: Export the result as an Excel file and show it up
 
 $result | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
