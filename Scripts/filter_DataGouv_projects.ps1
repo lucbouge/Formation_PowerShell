@@ -47,7 +47,7 @@ $excel = Import-Excel -Path "$path"
 
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/where-object
 
-$result = $excel | Where-Object -Property  -Match 
+$result = $excel | Where-Object -Property "$filtering_column" -Match "$filtering_expression"
 
 #####################################################
 # Phase 4: Export the result as an Excel file and show it up
