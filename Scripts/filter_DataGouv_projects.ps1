@@ -1,19 +1,22 @@
-# Retain CE projects only (-Match)
-$filtering_column1 = "Projet.Code_Decision_ANR"
-$filtering_expression1 = "^ANR-\d{2}-CE" 
+function test($line) {
 
-# Retain only those with "artificial" and then "intelligence" the English abstract (-Match),
-# not too far away, though
-$filtering_column2 = "Projet.Resume.anglais"
-$filtering_expression2 = "artificial.{1,20}intelligence" 
+    # Retain CE projects only (-match)
+    $test1 = $line."Projet.Code_Decision_ANR" -match "^ANR-20" 
 
-# Exclude those projects from CE23 (-NotMatch)
-$filtering_column3 = "Projet.Code_Decision_ANR"
-$filtering_expression3 = "-CE23-"
+    # Retain only those with "artificial" and then "intelligence" the English abstract (-match),
+    # not too far away, though
+    $test2 = $line."Projet.Resume.anglais" -match "artificial.{1,20}intelligence" 
 
+    # Exclude those projects from CE23 (-notmatch)
+    $test3 = $line."Projet.Code_Decision_ANR" -notmatch "-CE23-" 
+    
+    # Build the logical outcome
+    $test = $test1 -and $test2 -and $test3
+    # Return the value
+    return $test
+}
 
 # You may wish to expand the list as willing! :-)  
-# Make sure to add corresponding Where-Object commands below, with the right filtering option
 
 #####################################################
 # Phase 1: Download the DataGouv data into a local file
@@ -36,7 +39,6 @@ else {
 
 #####################################################
 # Phase 2: Install the ImportExcel Module
-
 # https://github.com/dfinke/ImportExcel
 
 $module = "ImportExcel"
@@ -57,20 +59,12 @@ else {
 Write-Host("Loading Excel file ${path}")
 
 $excel = Import-Excel -Path "$path"
-$result = $excel 
 
 #####################################################
-# Phase 4: Filter the result, using a sequence of positive (-Match) and negative (-NotMatch) patterns 
+# Phase 4: Filter the Excel file with the test function
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/where-object
 
-# Positive filtering (-Match)
-$result = $result | Where-Object -Property "$filtering_column1" -Match "$filtering_expression1"
-
-# Positive filtering (-Match)
-$result = $result | Where-Object -Property "$filtering_column2" -Match "$filtering_expression2"
-
-# Negative filtering (-NotMatch)
-$result = $result | Where-Object -Property "$filtering_column3" -NotMatch "$filtering_expression3"
+$result = $excel | Where-Object { test($_) } 
 
 #####################################################
 # Phase 5: Export the result as an Excel file and show it up
