@@ -9,7 +9,7 @@ function test($line) {
 
     # Exclude those projects from CE23 (-notmatch)
     $test3 = $line."Projet.Code_Decision_ANR" -notmatch "-CE23-" 
-    
+
     # Build the logical outcome
     $test = $test1 -and $test2 -and $test3
     # Return the value
@@ -21,7 +21,7 @@ function test($line) {
 #####################################################
 # Phase 1: Download the DataGouv data into a local file
 
-$url = "https://www.data.gouv.fr/fr/datasets/r/ecb8ec1b-a9e8-4ce0-8891-010ca1ca808f"
+$url = "https://www.data.gouv.fr/fr/datasets/r/b0ce2c54-68a9-4493-83d7-0721a391fb4f"
 
 $data = "data.xlsx"
 $path = "${HOME}/${data}"
