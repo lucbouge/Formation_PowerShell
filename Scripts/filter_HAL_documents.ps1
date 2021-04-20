@@ -3,6 +3,8 @@
 
 $query = "anrProjectReference_t:ANR-19-CE23-"
 
+$fields = @("docid", "uri_s", "anrProjectReference_s", "authFullName_s", "publicationDateY_i", "title_s")
+
 ##########################################################
 # You might also modify the body of the request 
 
@@ -10,7 +12,7 @@ $body = @{
   wt   = "json"
   rows = 1000
   q    = $query
-  fl   = "docid, uri_s, anrProjectReference_s, authFullName_s, publicationDateY_i, title_s"
+  fl   = $fields -join ","
 }
 
 ##########################################################
