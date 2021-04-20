@@ -1,9 +1,10 @@
 ##########################################################
-# Modifiy this query 
+# Modifiy this query as wanted
 
 $query = "(Luc Bouge)|(L Bouge)"
 
 ##########################################################
+# You might also modify the body of the request 
 
 $body = @{
   page         = 0
