@@ -3,7 +3,7 @@ $query = "(Luc Bougé)|(L Bougé)"
 $body = '{
     "page": 0,
     "pageSize": 1000,
-    "query": "Luc Bouge",
+    "query": "Luc Bougé",
     "searchFields": [
       "fullName"
     ],
@@ -17,7 +17,9 @@ $uri = "https://scanr-api.enseignementsup-recherche.gouv.fr/api/v2/persons/searc
 
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest
 
-$r = Invoke-WebRequest -URI $uri -Body $body -Method 'POST' -Headers @{"Content-Type" = 'application/json' }
+# https://davidhamann.de/2019/04/12/powershell-invoke-webrequest-by-example/
+
+$r = Invoke-WebRequest -URI $uri -Body $body -Method 'POST' -ContentType 'application/json; charset=utf-8'
 
 echo $r
 
