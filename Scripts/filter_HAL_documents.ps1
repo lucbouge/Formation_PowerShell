@@ -33,17 +33,18 @@ $properties = @("docid", "uri_s", "anrProjectReference_s", "authFullName_s", "pu
 
 $results = $results | Select-Object -Property $properties
 
-# ##########################################################
+###########################################################
 function linearize($line, $field) {
   $line.$field = $line.$field -join '; '
 }
 
-$fields = ("authFullName_s", "anrProjectReference_s", "title_s")
+$list_fields = ("authFullName_s", "anrProjectReference_s", "title_s")
 
 $results | ForEach-Object { 
   $line = $_
-  foreach ($field in $fields) { linearize $line $field; }
+  foreach ($field in $list_fields) { linearize $line $field; }
 }
-# ##########################################################
+
+###########################################################
 
 $results | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
