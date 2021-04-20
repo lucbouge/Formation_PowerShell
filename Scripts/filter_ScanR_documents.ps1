@@ -2,6 +2,7 @@
 # Modifiy this query as wanted
 
 $query = "(Luc Bouge)|(L Bouge)"
+$sourceFields = @("authors", "id", "title")
 
 ##########################################################
 # You might also modify the body of the request 
@@ -11,7 +12,7 @@ $body = @{
   pageSize     = 1000
   query        = $query
   searchFields = @("authors.fullName")
-  sourceFields = @("authors", "id", "title")
+  sourceFields = $sourceFields
 }
 
 ##########################################################
@@ -31,15 +32,31 @@ $results = ($r.Content | ConvertFrom-Json).results.value
 $results = $results | Select-Object -Property id, title, authors
 
 ##########################################################
-
-$results | ForEach-Object { $_.title = $_.title.default }
-
-function f($authors) {
-  $fullNames = $authors | ForEach-Object { "$($_.fullName) ($($_.person.id))" }
-  return $fullNames -join '; '
+function get_author_data($author) {
+  $fullName = $author.fullName
+  $id = $author.person.id
+  if (!$id) {
+    $id = "none"
+  }
+  return "$fullName ($id)"
 }
 
-$results | ForEach-Object { $_.authors = f($_.authors) }
+function replace_authors($line) {
+  $line.authors = $line.authors | ForEach-Object { $author = $_; get_author_data($author) } 
+}
+
+
+function linearize($line, $field) {
+  if ($line.$field -is [array]) {
+    $line.$field = $line.$field -join '; '
+  }
+}
+
+$results | ForEach-Object { 
+  $line = $_
+  replace_authors($line)
+  foreach ($field in $sourceFields) { linearize $line $field; }
+}
 
 ##########################################################
 

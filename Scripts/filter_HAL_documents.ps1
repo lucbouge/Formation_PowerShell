@@ -40,8 +40,6 @@ function linearize($line, $field) {
   }
 }
 
-# $list_fields = ("authFullName_s", "anrProjectReference_s", "title_s")
-
 $results | ForEach-Object { 
   $line = $_
   foreach ($field in $fields) { linearize $line $field; }
