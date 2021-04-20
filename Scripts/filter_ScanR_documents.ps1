@@ -18,15 +18,21 @@ $body_json = $body | ConvertTo-Json
 
 $r = Invoke-WebRequest -URI $uri -Body $body_json -Method 'POST' -ContentType 'application/json; charset=utf-8'
 
-$results = ($r.Content | ConvertFrom-Json).results
-
-$lines = foreach ($line in $results.value) { 
-  @{id      = $line.id
-    authors = $line.authors
-    title   = $line.title.default 
-  }
+function f($authors) {
+  return $authors.length
 }
 
-$lines
 
-# $lines | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
+$results = ($r.Content | ConvertFrom-Json).results
+$numbers = $results | ForEach-Object { f($_.value.authors) }
+$results | Add-Member -MemberType NoteProperty -Name Numbers -Value $numbers
+$results | Get-Member
+
+$numbers = $results.numbers 
+$id = $results.id
+$title = $results.title
+
+$results
+
+
+# Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
