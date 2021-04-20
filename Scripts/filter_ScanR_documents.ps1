@@ -2,7 +2,7 @@
 # Modifiy this query as wanted
 
 $query = "(Luc Bouge)|(L Bouge)"
-$sourceFields = @("authors", "id", "title")
+$sourceFields = @("id", "title", "authors")
 
 ##########################################################
 # You might also modify the body of the request 
@@ -29,7 +29,8 @@ $r = Invoke-WebRequest -URI $uri -Body $body_json -Method 'POST' -ContentType 'a
 ##########################################################
 
 $results = ($r.Content | ConvertFrom-Json).results.value
-$results = $results | Select-Object -Property id, title, authors
+
+$results = $results | Select-Object -Property $sourceFields
 
 ##########################################################
 function get_author_data($author) {
@@ -45,6 +46,10 @@ function replace_authors($line) {
   $line.authors = $line.authors | ForEach-Object { $author = $_; get_author_data($author) } 
 }
 
+function replace_title($line) {
+  $line.title = $line.title.default
+}
+
 
 function linearize($line, $field) {
   if ($line.$field -is [array]) {
@@ -55,6 +60,7 @@ function linearize($line, $field) {
 $results | ForEach-Object { 
   $line = $_
   replace_authors($line)
+  replace_title($line)
   foreach ($field in $sourceFields) { linearize $line $field; }
 }
 
