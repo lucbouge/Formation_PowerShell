@@ -1,31 +1,27 @@
-$query = "(Luc Bougé)|(L Bougé)"
+$query = "(Luc Bouge)|(L Bouge)"
 
-$body = '{
-    "page": 0,
-    "pageSize": 1000,
-    "query": "Luc Bougé",
-    "searchFields": [
-      "fullName"
-    ],
-    "sourceFields": [
-      "id"
-    ]
-  }' 
+$body = @{
+  page         = 0
+  pageSize     = 1000
+  query        = $query
+  searchFields = @("authors.fullName")
+  sourceFields = @("authors", "id", "title.default")
+}
 
-
-$uri = "https://scanr-api.enseignementsup-recherche.gouv.fr/api/v2/persons/search"
+$uri = "https://scanr-api.enseignementsup-recherche.gouv.fr/api/v2/publications/search"
 
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest
 
 # https://davidhamann.de/2019/04/12/powershell-invoke-webrequest-by-example/
 
-$r = Invoke-WebRequest -URI $uri -Body $body -Method 'POST' -ContentType 'application/json; charset=utf-8'
+$body_json = $body | ConvertTo-Json
 
-echo $r
+$r = Invoke-WebRequest -URI $uri -Body $body_json -Method 'POST' -ContentType 'application/json; charset=utf-8'
 
-# $result = ($r.Content | ConvertFrom-Json).response
+$results = ($r.Content | ConvertFrom-Json).results
+#$results.value | get-Member
 
-# $numFound = $result.numFound
-# Write-Host "numFound: $($result.numFound)"
+$lines = foreach ($line in $results.value) { @{id = $line.id; authors = $line.authors; title = $line.title.default }; }
+#$lines
 
-# $result.docs | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
+$lines | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
