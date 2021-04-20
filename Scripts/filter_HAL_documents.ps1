@@ -32,14 +32,15 @@ $properties = @("docid", "uri_s", "anrProjectReference_s", "authFullName_s", "pu
 $results = $results | Select-Object -Property $properties
 
 # ##########################################################
-function f($strings) {
-  return $strings -join '; '
+function linearize($line, $field) {
+  $line.$field = $line.$field -join '; '
 }
 
+$fields = ("authFullName_s", "anrProjectReference_s", "title_s")
+
 $results | ForEach-Object { 
-  $_.authFullName_s = f($_.authFullName_s); 
-  $_.anrProjectReference_s = f($_.anrProjectReference_s)
-  $_.title_s = f($_.title_s)
+  $line = $_
+  foreach ($field in $fields) { linearize $line $field; }
 }
 # ##########################################################
 
