@@ -19,9 +19,14 @@ $body_json = $body | ConvertTo-Json
 $r = Invoke-WebRequest -URI $uri -Body $body_json -Method 'POST' -ContentType 'application/json; charset=utf-8'
 
 $results = ($r.Content | ConvertFrom-Json).results
-#$results.value | get-Member
 
-$lines = foreach ($line in $results.value) { @{id = $line.id; authors = $line.authors; title = $line.title.default }; }
-#$lines
+$lines = foreach ($line in $results.value) { 
+  @{id      = $line.id
+    authors = $line.authors
+    title   = $line.title.default 
+  }
+}
 
-$lines | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
+$lines
+
+# $lines | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
