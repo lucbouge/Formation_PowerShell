@@ -26,10 +26,6 @@ $body_json = $body | ConvertTo-Json
 $r = Invoke-WebRequest -URI $uri -Body $body_json -Method 'POST' -ContentType 'application/json; charset=utf-8'
 
 ##########################################################
-function f($authors) {
-  $fullNames = $authors | ForEach-Object { "$($_.fullName) ($($_.person.id))" }
-  return $fullNames -join '|'
-}
 
 $results = ($r.Content | ConvertFrom-Json).results.value
 $results = $results | Select-Object -Property id, title, authors
@@ -37,6 +33,14 @@ $results = $results | Select-Object -Property id, title, authors
 ##########################################################
 
 $results | ForEach-Object { $_.title = $_.title.default }
+
+function f($authors) {
+  $fullNames = $authors | ForEach-Object { "$($_.fullName) ($($_.person.id))" }
+  return $fullNames -join '; '
+}
+
 $results | ForEach-Object { $_.authors = f($_.authors) }
+
+##########################################################
 
 $results | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
