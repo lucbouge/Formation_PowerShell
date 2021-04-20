@@ -35,14 +35,16 @@ $results = $results | Select-Object -Property $properties
 
 ###########################################################
 function linearize($line, $field) {
-  $line.$field = $line.$field -join '; '
+  if ($line.$field -is [array]) {
+    $line.$field = $line.$field -join '; '
+  }
 }
 
-$list_fields = ("authFullName_s", "anrProjectReference_s", "title_s")
+# $list_fields = ("authFullName_s", "anrProjectReference_s", "title_s")
 
 $results | ForEach-Object { 
   $line = $_
-  foreach ($field in $list_fields) { linearize $line $field; }
+  foreach ($field in $fields) { linearize $line $field; }
 }
 
 ###########################################################
