@@ -41,16 +41,12 @@ function get_author_data($author) {
   }
   return "$fullName ($id)"
 }
-
 function replace_authors($line) {
   $line.authors = $line.authors | ForEach-Object { $author = $_; get_author_data($author) } 
 }
-
 function replace_title($line) {
   $line.title = $line.title.default
 }
-
-
 function linearize($line, $field) {
   if ($line.$field -is [array]) {
     $line.$field = $line.$field -join '; '
