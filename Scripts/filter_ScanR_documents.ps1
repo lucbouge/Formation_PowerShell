@@ -61,7 +61,6 @@ $results | ForEach-Object {
 }
 
 ##########################################################
-
 # The -Now switch is a shortcut that automatically creates a temporary file, 
 # enables "AutoSize", "TableName" and "Show", and opens the file immediately.
         
