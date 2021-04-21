@@ -45,6 +45,10 @@ $results | ForEach-Object {
   foreach ($field in $fields) { linearize $line $field; }
 }
 
-###########################################################
-
-$results | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
+##########################################################
+# The -Now switch is a shortcut that automatically creates a temporary file, 
+# enables "AutoSize", "TableName" and "Show", and opens the file immediately.
+        
+$excel_package = $results | Export-Excel -PassThru -Now -WorksheetName "Query"-FreezeTopRowFirstColumn -BoldTopRow 
+$excel_package."Query".Cells.AutoFitColumns(20, 20) 
+Export-Excel -ExcelPackage $excel_package -Show
