@@ -1,7 +1,7 @@
 ##########################################################
 # Modifiy this query as wanted
 
-$query = "anrProjectReference_t:ANR-19-CE23-"
+$query = "anrProjectReference_t:""ANR-19-CE23-"""
 
 $fields = @("docid", "uri_s", "anrProjectReference_s", "authFullName_s", "publicationDateY_i", "title_s")
 
