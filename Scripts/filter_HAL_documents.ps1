@@ -12,7 +12,7 @@ $body = @{
   wt   = "json"
   rows = 1000
   q    = $query
-  fl   = $fields -join ","
+  fl   = $fields -join ", "
 }
 
 ##########################################################
@@ -31,7 +31,7 @@ $results = ($r.Content | ConvertFrom-Json).response.docs
 
 $properties = @("docid", "uri_s", "anrProjectReference_s", "authFullName_s", "publicationDateY_i", "title_s")
 
-$results = $results | Select-Object -Property $properties
+$results = $results | Select-Object -Property $properties
 
 ###########################################################
 function linearize($line, $field) {
@@ -49,6 +49,6 @@ $results | ForEach-Object {
 # The -Now switch is a shortcut that automatically creates a temporary file, 
 # enables "AutoSize", "TableName" and "Show", and opens the file immediately.
         
-$excel_package = $results | Export-Excel -PassThru -Now -WorksheetName "Query"-FreezeTopRowFirstColumn -BoldTopRow 
+$excel_package = $results | Export-Excel -PassThru -Now -WorksheetName "Query"-FreezeTopRowFirstColumn -BoldTopRow 
 $excel_package."Query".Cells.AutoFitColumns(5, 30) 
 Export-Excel -ExcelPackage $excel_package -Show

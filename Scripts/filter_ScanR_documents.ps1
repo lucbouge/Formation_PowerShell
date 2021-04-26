@@ -2,6 +2,7 @@
 # Modifiy this query as wanted
 
 $query = "(Luc Bouge)|(L Bouge)"
+
 $sourceFields = @("id", "title", "authors")
 
 ##########################################################
@@ -22,7 +23,7 @@ $uri = "https://scanr-api.enseignementsup-recherche.gouv.fr/api/v2/publications/
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.utility/invoke-webrequest
 # https://davidhamann.de/2019/04/12/powershell-invoke-webrequest-by-example/
 
-$body_json = $body | ConvertTo-Json
+$body_json = $body | ConvertTo-Json
 
 $r = Invoke-WebRequest -URI $uri -Body $body_json -Method 'POST' -ContentType 'application/json; charset=utf-8'
 
@@ -30,7 +31,7 @@ $r = Invoke-WebRequest -URI $uri -Body $body_json -Method 'POST' -ContentType 'a
 
 $results = ($r.Content | ConvertFrom-Json).results.value
 
-$results = $results | Select-Object -Property $sourceFields
+$results = $results | Select-Object -Property $sourceFields
 
 ##########################################################
 function get_author_data($author) {
@@ -64,6 +65,6 @@ $results | ForEach-Object {
 # The -Now switch is a shortcut that automatically creates a temporary file, 
 # enables "AutoSize", "TableName" and "Show", and opens the file immediately.
         
-$excel_package = $results | Export-Excel -PassThru -Now -WorksheetName "Query" -FreezeTopRowFirstColumn -BoldTopRow 
+$excel_package = $results | Export-Excel -PassThru -Now -WorksheetName "Query" -FreezeTopRowFirstColumn -BoldTopRow 
 $excel_package."Query".Cells.AutoFitColumns(5, 30) 
 Export-Excel -ExcelPackage $excel_package -Show
