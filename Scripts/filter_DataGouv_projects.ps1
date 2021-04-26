@@ -1,17 +1,22 @@
 function test($line) {
 
     # Retain CE projects only (-match)
+    #
     $test1 = $line."Projet.Code_Decision_ANR" -match "^ANR-20" 
 
     # Retain only those with "artificial" and then "intelligence" the English abstract (-match),
     # not too far away, though
+    #
     $test2 = $line."Projet.Resume.anglais" -match "artificial.{1,20}intelligence" 
 
     # Exclude those projects from CE23 (-notmatch)
+    #
     $test3 = $line."Projet.Code_Decision_ANR" -notmatch "-CE23-" 
 
     # Build the logical outcome
+    #
     $test = $test1 -and $test2 -and $test3
+    
     # Return the value
     return $test
 }
@@ -64,9 +69,13 @@ $excel = Import-Excel -Path "$path"
 # Phase 4: Filter the Excel file with the test function
 # https://docs.microsoft.com/en-us/powershell/module/microsoft.powershell.core/where-object
 
-$result = $excel | Where-Object { test($_) } 
+$results = $excel | Where-Object { test($_) } 
 
 #####################################################
 # Phase 5: Export the result as an Excel file and show it up
-
-$result | Export-Excel -Show -AutoSize -AutoFilter -FreezeTopRow
+# The -Now switch is a shortcut that automatically creates a temporary file, 
+# enables "AutoSize", "TableName" and "Show", and opens the file immediately.
+        
+$excel_package = $results | Export-Excel -PassThru -Now -WorksheetName "Query"-FreezeTopRowFirstColumn -BoldTopRow 
+$excel_package."Query".Cells.AutoFitColumns(5, 30) 
+Export-Excel -ExcelPackage $excel_package -Show

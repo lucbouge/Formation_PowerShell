@@ -45,7 +45,24 @@ $results | ForEach-Object {
   foreach ($field in $fields) { linearize $line $field; }
 }
 
-##########################################################
+#####################################################
+# Install the ImportExcel Module
+# https://github.com/dfinke/ImportExcel
+
+$module = "ImportExcel"
+
+$test = Get-Module -ListAvailable -Name "$module"
+
+if ($test) {
+  Write-Host("Module ${module} already installed")
+}
+else {
+  Write-Host("Installing Module ${module}")
+  Install-Module -Name "$module" -Scope CurrentUser
+}
+
+#####################################################
+# Export the result as an Excel file and show it up
 # The -Now switch is a shortcut that automatically creates a temporary file, 
 # enables "AutoSize", "TableName" and "Show", and opens the file immediately.
         
